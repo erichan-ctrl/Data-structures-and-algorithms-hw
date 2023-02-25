@@ -62,7 +62,7 @@ int findPrime(vector<int> &arr) {
     return -1;
 }
 
-int *placeAfterPrime(int arr[], int index, size_t &arraySize, int newElem) {
+int *placeAfterPrime(int arr[], int index, size_t &arraySize, int newElem, const bool isStatic) {
     for (int i = arraySize; i > index + 1; --i) {
         arr[i] = arr[i - 1];
     }
@@ -71,13 +71,12 @@ int *placeAfterPrime(int arr[], int index, size_t &arraySize, int newElem) {
     return arr;
 }
 
-int *placeAfterPrime(int *arr, int index, size_t &arraySize, int newElem, const bool isStatic) {
-    arraySize++;
-    arr = (int *) realloc(arr, arraySize * sizeof(int));
+int *placeAfterPrime(int arr[], int index, size_t &arraySize, int newElem) {
     for (int i = arraySize; i > index + 1; --i) {
         arr[i] = arr[i - 1];
     }
     arr[index + 1] = newElem;
+    arraySize++;
     return arr;
 }
 
@@ -99,14 +98,14 @@ int *deleteElement(int arr[], size_t &arraySize, const bool isStatic) {
     return arr;
 }
 
-int *deleteElement(int *arr, size_t &arraySize) {
+int *deleteElement(int *&arr, size_t &arraySize) {
     for (int i = 0; i < arraySize; ++i) {
         if (arr[i] % 7 == 0) {
             for (int j = i; j < (arraySize - 1); ++j) {
                 arr[j] = arr[j + 1];
             }
-            --arraySize;
             arr = (int *) realloc(arr, arraySize * sizeof(int));
+            --arraySize;
             --i;
         }
     }
