@@ -123,6 +123,7 @@ void deleteElement(vector<int> &arr, const bool isVector) {
 
 int main() {
     SetConsoleOutputCP(CP_UTF8);
+    setlocale(LC_ALL, "Russian");
     cout << "Выберите тип массива: \n"
             "1 - Статический массив \n"
             "2 - Динамический массив\n"
