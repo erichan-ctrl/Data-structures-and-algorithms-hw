@@ -112,6 +112,7 @@ int *deleteElement(int *&arr, size_t &arraySize) {
     return arr;
 }
 
+
 void deleteElement(vector<int> &arr, const bool isVector) {
     for (int i = 0; i < arr.size(); i++) {
         if (arr[i] % 7 == 0) {
