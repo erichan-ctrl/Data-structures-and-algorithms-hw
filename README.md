@@ -1,2 +1,2 @@
 # I'M NOT RESPONSIBLE FOR  YOUR USAGE OF THIS CODE! FOR INTRODUCTORY PURPOSES
-### for 1 variant of SIAOD in RTU MIREA
+### 1 variant of RTU MIREA subject laboratory works.
