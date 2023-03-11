@@ -1,234 +1,165 @@
 #include <iostream>
-#include <cmath>
+#include <string>
+#include <unordered_map>
 #include <vector>
-
+#include <cstring>
 
 using namespace std;
+// Функция для удаления повторяющихся слов в строке
 
-const int rows = 100;
-const int cols = 100;
+string removeDuplicates(string str) {
+    unordered_map<string, bool> map;
+    string result;
 
-void arrayOutputHandler(int arr[][cols], int row, int col) {
-    for (int i = 0; i < row; ++i) {
-        for (int j = 0; j < col; ++j) {
-            cout << arr[i][j] << " ";
+    for (int i = 0; i < str.length(); i++) {
+        string word;
+
+        // Извлекаем каждое слово из строки
+        while (i < str.length() && str[i] != ' ' && str[i] != ',') {
+            word += str[i];
+            i++;
         }
-        cout << "\n";
+
+        // Если слово уже было встречено ранее, пропускаем его
+        if (map.find(word) != map.end()) {
+            continue;
+        }
+
+        // Добавляем слово в результат и помечаем его как встреченное
+        result += word + ' ';
+        map[word] = true;
     }
+
+    return result;
 }
 
-void arrayOutputHandler(int **arr, int row, int col) {
-    for (int i = 0; i < row; ++i) {
-        for (int j = 0; j < col; ++j) {
-            cout << arr[i][j] << " ";
-        }
-        cout << "\n";
-    }
-}
-
-void arrayInputHandler(int arr[][cols], int row, int col, int option) {
-    if (option == 1) {
-        cout << "Input array, use enter to switch to new row\n";
-        for (int i = 0; i < row; ++i) {
-            for (int j = 0; j < col; ++j) {
-                cin >> arr[i][j];
-            }
-        }
-    } else if (option == 2) {
-        for (int i = 0; i < row; ++i) {
-            for (int j = 0; j < col; ++j) {
-                arr[i][j] = rand() % 100 + 1;
-            }
-        }
-    }
-}
-
-void arrayInputHandler(int **arr, int row, int col, int option) {
-    if (option == 1) {
-        cout << "Input array, use enter to switch to new row\n";
-        for (int i = 0; i < row; ++i) {
-            for (int j = 0; j < col; ++j) {
-                cin >> arr[i][j];
-            }
-        }
-    } else if (option == 2) {
-        for (int i = 0; i < row; ++i) {
-            for (int j = 0; j < col; ++j) {
-                arr[i][j] = rand() % 100 + 1;
-            }
-        }
-    }
-}
-
-void matrixTransposition(int arr[][cols], int row, int col) {
-    int t;
-    for (int i = 0; i < row; ++i) {
-        for (int j = i + 1; j < col; ++j) {
-            t = arr[i][j];
-            arr[i][j] = arr[j][i];
-            arr[j][i] = t;
-        }
-    }
-}
-
-void matrixTransposition(int **arr, int row, int col) {
-    int t;
-    for (int i = 0; i < row; ++i) {
-        for (int j = i + 1; j < col; ++j) {
-            t = arr[i][j];
-            arr[i][j] = arr[j][i];
-            arr[j][i] = t;
-        }
-    }
-}
-
-struct Point {
-    double x, y;
-};
-struct Polygon {
-    vector <Point> vertices;
+struct NumberArray {
+    int *arr;
+    int size;
 };
 
-
-double polygonArea(const Polygon& poly) {
-    double area = 0;
-    size_t n = poly.vertices.size();
-    for (int i = 0; i < n; i++) {
-        size_t j = (i + 1) % n;
-        area += poly.vertices[i].x * poly.vertices[j].y;
-        area -= poly.vertices[j].x * poly.vertices[i].y;
-    }
-    return abs(area) / 2;
+// Функция, проверяющая, число ли символ
+bool isDigit(char c) {
+    return (c >= '0' && c <= '9');
 }
 
-bool isNested(const Polygon& poly1, const Polygon& poly2) {
-    for (const Point& vertex : poly1.vertices) {
-        bool inside = false;
+NumberArray getNumbers(const char *str) {
+    NumberArray numbers{};
+    numbers.arr = new int[strlen(str)];
+    numbers.size = 0;
 
-        for (size_t i = 0, j = poly2.vertices.size() - 1; i < poly2.vertices.size(); j = i++) {
-            if (((poly2.vertices[i].y <= vertex.y && vertex.y < poly2.vertices[j].y) ||
-                 (poly2.vertices[j].y <= vertex.y && vertex.y < poly2.vertices[i].y)) &&
-                (vertex.x < (poly2.vertices[j].x - poly2.vertices[i].x) * (vertex.y - poly2.vertices[i].y) / (poly2.vertices[j].y - poly2.vertices[i].y) + poly2.vertices[i].x)) {
-                inside = !inside;
+    int number = 0;
+    bool inNumber = false;
+    bool duplicate = false;
+
+    for (int i = 0; str[i]; i++) {
+        if (isDigit(str[i])) {
+            number = number * 10 + (str[i] - '0'); //  Преобразование символьного представления числа в целочисленное значение
+            inNumber = true;
+        } else {
+            if (inNumber) {
+                duplicate = false;
+                for (int j = 0; j < numbers.size; j++) {
+                    if (numbers.arr[j] == number) {
+                        duplicate = true;
+                        break;
+                    }
+                }
+                if (!duplicate) {
+                    numbers.arr[numbers.size] = number;
+                    numbers.size++;
+                }
+                number = 0;
+                inNumber = false;
             }
         }
-
-        if (inside) {
-            return true;
-        }
     }
 
-    for (const Point& vertex : poly2.vertices) {
-        bool inside = false;
-
-        for (size_t i = 0, j = poly1.vertices.size() - 1; i < poly1.vertices.size(); j = i++) {
-            if (((poly1.vertices[i].y <= vertex.y && vertex.y < poly1.vertices[j].y) ||
-                 (poly1.vertices[j].y <= vertex.y && vertex.y < poly1.vertices[i].y)) &&
-                (vertex.x < (poly1.vertices[j].x - poly1.vertices[i].x) * (vertex.y - poly1.vertices[i].y) / (poly1.vertices[j].y - poly1.vertices[i].y) + poly1.vertices[i].x)) {
-                inside = !inside;
+    // Проверяем последнее число, если оно есть
+    if (inNumber) {
+        duplicate = false;
+        for (int j = 0; j < numbers.size; j++) {
+            if (numbers.arr[j] == number) {
+                duplicate = true;
+                break;
             }
         }
-
-        if (inside) {
-            return true;
+        if (!duplicate) {
+            numbers.arr[numbers.size] = number;
+            numbers.size++;
         }
     }
 
-    return false;
+    return numbers;
 }
 
+// Функция для извлечения чисел из строки
+vector<int> extractNumbers(string str) {
+    vector<int> numbers;
 
+    for (int i = 0; i < str.length(); i++) {
+        string number;
 
-void polygonInputHandler(Polygon& poly) {
-    int n;
-    cout << "Enter the number of vertices of a polygon\n";
-    cin >> n;
-    poly.vertices.resize(n);
-    cout << "Input the points of the polygon\n";
-    for (int i = 0; i < n; i++) {
-        cin >> poly.vertices[i].x >> poly.vertices[i].y;
+        // Извлекаем каждое число из строки
+        while (i < str.length() && isdigit(str[i])) {
+            number += str[i];
+            i++;
+        }
+
+        // Если число не пустое, добавляем его в массив
+        if (!number.empty()) {
+            numbers.push_back(stoi(number));
+        }
     }
+
+    return numbers;
 }
+
 
 int main() {
-    int taskOption = 0, n = 0;
-    while (taskOption != 3) {
-        cout << "Select the task \n"
-                "1 - A matrix of size n*n is given. Transpose the matrices.\n"
-                "2 - Two convex polygons in the plane are given by the coordinates of the vertices in the order of the boundary.\n Determine the area of the polygon and determine if they are nested. \n"
-                "3 - exit \n";
-        cin >> taskOption;
+    char sentence[2048];
+    int option = 0;
+    cout << "Delete the words that appear there more than once and form an array of numbers that appear in the text.\n"
+            "Enter the option:\n"
+            "1 - terminal null realisation\n"
+            "2 - string realisation\n"
+            "3 - exit\n";
 
-        if (taskOption == 1) {
-            cout << "Select the type of an array: \n"
-                    "1 - static \n"
-                    "2 - dynamic \n";
-            cin >> n;
-            if (n == 1) {
-                int option;
-                int arr[rows][cols];
-                int row, col;
-                cout << "Enter the number of rows and columns: \n";
-                cin >> row >> col;
-                cout << "Select the option of input: \n"
-                        "1 - Manual\n"
-                        "2 - Random\n";
-                cin >> option;
-                if (option == 1 || option == 2) {
-                    arrayInputHandler(arr, row, col, option);
-                    cout << "Current matrix is:\n";
-                    arrayOutputHandler(arr, row, col);
-                    matrixTransposition(arr, row, col);
-                    cout << "Transposed matrix is:\n";
-                    arrayOutputHandler(arr, row, col);
-                } else {
-                    cout << "There is no such option \n";
-                }
-            } else if (n == 2) {
-                int row, col, option = 0;
-                cout << "Enter the number of rows and columns:\n";
-                cin >> row >> col;
-                int **arr = new int *[row];
-                for (int i = 0; i < row; ++i) {
-                    arr[i] = new int[cols];
-                }
-                cout << "Select the method of input: \n"
-                        "1 - Manual\n"
-                        "2 - Random\n";
-                cin >> option;
-                if (option == 1 || option == 2) {
-                    arrayInputHandler(arr, row, col, option);
-                    cout << "Current matrix is:\n";
-                    arrayOutputHandler(arr, row, col);
-                    matrixTransposition(arr, row, col);
-                    cout << "Transposed matrix is:\n";
-                    arrayOutputHandler(arr, row, col);
-                } else {
-                    cout << "There is no such option \n";
-                }
-                for (int i = 0; i < row; ++i) {
-                    delete[] arr[i];
-                }
-                delete[] arr;
+    cin >> option;
+    while (option != 3) {
+        if (option == 1) {
+
+            cout << "Enter sentence (no more than 2048)\n";
+            cin.ignore();
+            cin.getline(sentence, 2048);
+
+            string uniqueSentence = removeDuplicates(sentence);
+            vector<int> numbers = extractNumbers(uniqueSentence);
+
+            // Выводим уникальное предложение и массив чисел
+            cout << "Unique sentence: " << uniqueSentence << endl;
+            cout << "Numbers: ";
+            for (int number: numbers) {
+                cout << number << " ";
             }
-        }
-        if (taskOption == 2) {
-            Polygon poly1, poly2;
-            polygonInputHandler(poly1);
-            polygonInputHandler(poly2);
-            double area1 = polygonArea(poly1);
-            double area2 = polygonArea(poly2);
+            cout << endl;
+        } else if (option == 2) {
+            cout << "Enter sentence\n";
+            cin.ignore();
+            cin.getline(sentence, 2048);
+            string uniqueSentence = removeDuplicates(sentence);
+            vector<int> numbers = extractNumbers(uniqueSentence);
 
-            cout << "Area of polygon 1: " << area1 << endl;
-            cout << "Area of polygon 2: " << area2 << endl;
-
-            if (isNested(poly1, poly2) || isNested(poly2, poly1)) {
-                cout << "Polygons are nested" << endl;
-            } else {
-                cout << "The polygons do not intersect" << endl;
+            // Выводим уникальное предложение и массив чисел
+            cout << "Unique sentence: " << uniqueSentence << endl;
+            cout << "Numbers: ";
+            for (int number : numbers) {
+                cout << number << " ";
             }
+            cout << endl;
+
+            return 0;
         }
+        return 0;
     }
-    return 0;
 }
-
