@@ -1,0 +1,3 @@
+C:/Users/avdee/CLionProjects/siaod4/cmake-build-debug/CMakeFiles/siaod4.dir
+C:/Users/avdee/CLionProjects/siaod4/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/avdee/CLionProjects/siaod4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
